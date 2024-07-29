@@ -1,0 +1,91 @@
+<div class="container">
+    <form (ngSubmit)="onSubmit()" #uploadForm="ngForm" class="upload-form">
+      <h1 class="title">📸 Image Uploader</h1>
+      
+      <div class="upload-controls">
+        <label for="fileInput" class="upload-label">📁 Upload Individual Files:</label>
+        <input 
+          type="file" 
+          id="fileInput" 
+          (change)="onFileChange($event)" 
+          multiple 
+          [attr.accept]="acceptFiles"
+        >
+  
+        <label for="folderInput" class="upload-label">📂 Upload Folder:</label>
+        <input 
+          type="file" 
+          id="folderInput" 
+          (change)="onFileChange($event)" 
+          webkitdirectory 
+          multiple 
+          [attr.accept]="acceptFiles"
+        >
+      </div>
+  
+      <div 
+        class="drop-zone" 
+        [class.dragover]="isDragOver" 
+        (dragover)="onDragOver($event)" 
+        (dragleave)="onDragLeave($event)" 
+        (drop)="onDrop($event)">
+        <p>🔄 Drag and drop files here</p>
+      </div>
+  
+    <!-- Display Selected Files -->
+    <div *ngIf="selectedFiles.length > 0" class="file-list">
+      <h2>Selected Files (Individual Upload)</h2>
+      <ul>
+        <li *ngFor="let file of selectedFiles; let i = index">
+          {{ file.name }}
+          <button (click)="removeFile(i)">Remove</button>
+        </li>
+      </ul>
+    </div>
+  
+    <!-- Display Folder Files -->
+    <div *ngIf="folderFiles.length > 0" class="file-list">
+      <h2>Folder Files</h2>
+      <ul>
+        <li *ngFor="let file of folderFiles; let i = index">
+          {{ file.name }}
+          <button (click)="removeFileFromFolder(i)">Remove</button>
+        </li>
+      </ul>
+    </div>
+  
+    <button type="submit" class="upload-button" [disabled]="uploadBtnDisabled">🚀 Upload</button>
+  
+    <div *ngIf="uploadProgress.length > 0" class="progress-container">
+        <h2>Upload Progress:</h2>
+        <ul class="progress-list">
+          <li *ngFor="let progress of uploadProgress">
+            <span><strong>Filename:</strong> {{ progress.fileName }} </span>
+            <span><strong> Actual Value:</strong> {{ progress.correctValue }} </span>
+            <span><strong> Predicted Value:</strong> {{ progress.predictedValue }} </span>
+          </li>
+        </ul>
+    </div>
+
+    <div *ngIf="uploadProgress.length > 1" class="confusion-matrix">
+        <div class="row header">
+          <div class="cell empty"></div>
+          <div class="cell">Predicted Correct</div>
+          <div class="cell">Predicted Faulty</div>
+        </div>
+        <div class="row">
+          <div class="cell header">Actual Correct</div>
+          <div class="cell">{{ confusionMatrix[0][0] }}</div>
+          <div class="cell">{{ confusionMatrix[0][1] }}</div>
+        </div>
+        <div class="row">
+          <div class="cell header">Actual Faulty</div>
+          <div class="cell">{{ confusionMatrix[1][0] }}</div>
+          <div class="cell">{{ confusionMatrix[1][1] }}</div>
+        </div>
+      </div>
+  
+    
+    </form>
+  </div>
+  
